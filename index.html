@@ -7,14 +7,12 @@
     <title>Hello Firebase!</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
-        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 </head>
 
 <body>
-    <section class="section">
-        <div id="app" class="container">
+    <section class="section" id="app">
+        <div class="container">
             <div class="columns is-centered">
                 <div class="column">
                     <h1 class="title">Welcome to AnonInfinity</h1>
@@ -190,7 +188,7 @@
         }
 
 
-        $(main)
+        (function () { main() })()
 
     </script>
 </body>
