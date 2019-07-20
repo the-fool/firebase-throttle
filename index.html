@@ -118,7 +118,6 @@
 
             firebase.auth().onAuthStateChanged(user => {
                 app.user = user
-                console.log(app.$data)
                 if (user) {
                     console.group('Signed In')
                     console.log(user)
