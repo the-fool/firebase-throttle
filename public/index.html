@@ -1,73 +1,91 @@
 <!DOCTYPE html>
 <html>
-
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Hello Throttle</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css">
-    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.5/css/bulma.min.css"
+    />
+    <script
+      defer
+      src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"
+    ></script>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
 
-<body>
+    <style>
+        html, body {
+            background: #fafafa;
+        }
+    </style>
+  </head>
+
+  <body>
     <section class="section" id="app">
-        <div class="container">
-            <div class="columns is-centered">
-                <div class="column">
-                    <h1 class="title">Anoymous auth, yet throttled</h1>
-                </div>
-            </div>
-
-            <div class="columns is-centered">
-                <div class="column">
-                    <div class="box">
-                        <div class="level">
-                            <div class="level-left">
-                                <a class="button level-item" onclick="signIn()">Sign In</a>
-                                <a v-if="user" class="button is-danger level-item" onclick="signOut()">Sign Out</a>
-                            </div>
-                        </div>
-
-                        <div v-if="user">
-
-                            <div class="notification is-info">
-                                <p>
-                                    Signed in as: {{user.uid}}
-                                </p>
-                            </div>
-
-
-                            <div id="message">
-                                <a class="button is-primary" onclick="sendMessage()">Upload Message</a>
-                                <span id="status" class="has-text-danger">{{ alert }}</span>
-                                <div id="cooldown" v-if="cooldown > 0">{{ cooldown }} seconds . . . </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="column">
-                    <h2>Messages</h2>
-                    <table class="table is-striped">
-                        <thead>
-                            <tr>
-                                <th>UID</th>
-                                <th>Timestamp</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="msg in messages">
-                                <td>{{ msg.uid }}</td>
-                                <td>{{ msg.ts }}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                    <a class="button is-danger" onclick="clearAll()">Clear All</a>
-                </div>
-            </div>
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column">
+            <h1 class="title">Anoymous auth, yet throttled</h1>
+          </div>
         </div>
+
+        <div class="columns is-centered">
+          <div class="column">
+            <div class="box">
+              <div class="level">
+                <div class="level-left">
+                  <a class="button level-item" onclick="signIn()">Sign In</a>
+                  <a
+                    v-if="user"
+                    class="button is-danger level-item"
+                    onclick="signOut()"
+                    >Sign Out</a
+                  >
+                </div>
+              </div>
+
+              <div v-if="user">
+                <div class="notification is-info">
+                  <p>Signed in as: {{ user.uid }}</p>
+                </div>
+
+                <div id="message">
+                  <a class="button is-primary" onclick="sendMessage()"
+                    >Upload Message</a
+                  >
+                  <span id="status" class="has-text-danger">{{ alert }}</span>
+                  <div id="cooldown" v-if="cooldown > 0">
+                    {{ cooldown }} seconds . . .
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="column">
+            <div class="box">
+              <h2>Messages</h2>
+              <table class="table is-striped">
+                <thead>
+                  <tr>
+                    <th>UID</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="msg in messages">
+                    <td>{{ msg.uid }}</td>
+                    <td>{{ msg.ts }}</td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <a class="button is-danger" onclick="clearAll()">Clear All</a>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <script src="https://www.gstatic.com/firebasejs/6.3.1/firebase-app.js"></script>
@@ -75,122 +93,124 @@
     <script src="https://www.gstatic.com/firebasejs/6.3.1/firebase-database.js"></script>
 
     <script>
-        let app
-        let db
-        let messagesRef
+      let app
+      let db
+      let messagesRef
 
-        const bigString = 'x'.repeat(400)
+      const bigString = "x".repeat(400)
 
-        function initVue() {
-            app = new Vue({
-                el: '#app',
-                data: {
-                    user: null,
-                    messages: [],
-                    alert: '',
-                    cooldown: 0
-                }
-            })
+      function initVue() {
+        app = new Vue({
+          el: "#app",
+          data: {
+            user: null,
+            messages: [],
+            alert: "",
+            cooldown: 0
+          }
+        })
+      }
+
+      function main() {
+        initVue()
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyCrSb2cjyZmLHd_hzZt8SaIqnXExVqrxOo",
+          authDomain: "truble-firebase-stackdriver.firebaseapp.com",
+          databaseURL: "https://truble-firebase-stackdriver.firebaseio.com",
+          projectId: "truble-firebase-stackdriver",
+          storageBucket: "",
+          messagingSenderId: "1036816622992",
+          appId: "1:1036816622992:web:f9bab4f087dfc0d8"
         }
 
-        function main() {
-            initVue()
+        firebase.initializeApp(firebaseConfig)
+        db = firebase.database()
+        messagesRef = db.ref("messages")
+        messagesRef.on("child_added", data => {
+          app.messages.push(data.val())
+        })
 
-            const firebaseConfig = {
-                apiKey: "AIzaSyCrSb2cjyZmLHd_hzZt8SaIqnXExVqrxOo",
-                authDomain: "truble-firebase-stackdriver.firebaseapp.com",
-                databaseURL: "https://truble-firebase-stackdriver.firebaseio.com",
-                projectId: "truble-firebase-stackdriver",
-                storageBucket: "",
-                messagingSenderId: "1036816622992",
-                appId: "1:1036816622992:web:f9bab4f087dfc0d8"
+        firebase.auth().onAuthStateChanged(user => {
+          app.user = user
+          if (user) {
+            console.group("Signed In")
+            console.log(user)
+            console.groupEnd()
+          } else {
+            app.messageStatus = ""
+            app.cooldown = 0
+          }
+        })
+      }
+
+      function sendMessage() {
+        if (!app.user) {
+          return
+        }
+
+        const uid = app.user.uid
+        const auditRef = db.ref(`audit/${uid}`)
+        auditRef
+          .set(firebase.database.ServerValue.TIMESTAMP)
+          .then(() => auditRef.once("value"))
+          .catch(er => {
+            const code = er.code
+            if (code === "PERMISSION_DENIED") {
+              app.alert = "Over quota. Wait a sec."
             }
-
-
-            firebase.initializeApp(firebaseConfig)
-            db = firebase.database()
-            messagesRef = db.ref('messages')
-            messagesRef.on('child_added', data => {
-                app.messages.push(data.val())
-            })
-
-            firebase.auth().onAuthStateChanged(user => {
-                app.user = user
-                if (user) {
-                    console.group('Signed In')
-                    console.log(user)
-                    console.groupEnd()
-                } else {
-                    app.messageStatus = ''
-                    app.cooldown = 0
-                }
-            })
-        }
-
-        function sendMessage() {
-            if (!app.user) {
-                return
+            return Promise.reject(er)
+          })
+          .then(snap => {
+            const ts = snap.val()
+            const msg = {
+              uid,
+              ts,
+              message: bigString
             }
+            return messagesRef.push(msg)
+          })
+          .catch(er => {
+            console.log(er)
+            return Promise.reject(er)
+          })
+          .then(data => {
+            app.alert = ""
+            app.cooldown = 5
+            countdown()
+          })
+      }
 
-            const uid = app.user.uid
-            const auditRef = db.ref(`audit/${uid}`)
-            auditRef.set(firebase.database.ServerValue.TIMESTAMP)
-                .then(() => auditRef.once('value'))
-                .catch(er => {
-                    const code = er.code
-                    if (code === 'PERMISSION_DENIED') {
-                        app.alert = 'Over quota. Wait a sec.'
-                    }
-                    return Promise.reject(er);
-                })
-                .then(snap => {
-                    const ts = snap.val()
-                    const msg = {
-                        uid,
-                        ts,
-                        message: bigString
-                    }
-                    return messagesRef.push(msg)
-                })
-                .catch(er => {
-                    console.log(er)
-                    return Promise.reject(er)
-                })
-                .then(data => {
-                    app.alert = ''
-                    app.cooldown = 5
-                    countdown()
-                })
+      function clearAll() {
+        app.messages = []
+        messagesRef.remove()
+      }
+
+      function countdown() {
+        if (app.cooldown > 0) {
+          setTimeout(() => {
+            app.cooldown--
+            countdown()
+          }, 1000)
+        } else {
+          app.alert = ""
         }
+      }
 
-        function clearAll() {
-            app.messages = []
-            messagesRef.remove()
-        }
+      function signIn() {
+        firebase
+          .auth()
+          .signInAnonymously()
+          .catch(er => console.log(er))
+      }
 
-        function countdown() {
-            if (app.cooldown > 0) {
-                setTimeout(() => {
-                    app.cooldown--
-                    countdown()
-                }, 1000)
-            } else {
-                app.alert = ''
-            }
-        }
+      function signOut() {
+        firebase.auth().signOut()
+      }
 
-        function signIn() {
-            firebase.auth().signInAnonymously().catch(er => console.log(er))
-        }
-
-        function signOut() {
-            firebase.auth().signOut()
-        }
-
-
-        (function () { main() })()
-
+      ;(function() {
+        main()
+      })()
     </script>
-</body>
-
+  </body>
 </html>
