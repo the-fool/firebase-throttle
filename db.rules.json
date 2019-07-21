@@ -9,7 +9,6 @@
       },
 
       "messages": {
-        // this write permission is so the demo can delete all messages in order to reset itself
         ".write": true,
 
         ".read": true,
