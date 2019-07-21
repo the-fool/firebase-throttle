@@ -1,0 +1,152 @@
+[debug] [2019-07-21T18:06:15.830Z] ----------------------------------------------------------------------
+[debug] [2019-07-21T18:06:15.833Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\sketc\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy
+[debug] [2019-07-21T18:06:15.833Z] CLI Version:   7.1.1
+[debug] [2019-07-21T18:06:15.833Z] Platform:      win32
+[debug] [2019-07-21T18:06:15.833Z] Node Version:  v10.15.1
+[debug] [2019-07-21T18:06:15.835Z] Time:          Sun Jul 21 2019 13:06:15 GMT-0500 (Central Daylight Time)
+[debug] [2019-07-21T18:06:15.835Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2019-07-21T18:06:15.845Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2019-07-21T18:06:15.847Z] > authorizing via signed-in user
+[debug] [2019-07-21T18:06:15.847Z] [iam] checking project truble-firebase-stackdriver for permissions ["firebase.projects.get","firebasedatabase.instances.update","firebasehosting.sites.update","firebaserules.releases.create","firebaserules.releases.update","firebaserules.rulesets.create"]
+[debug] [2019-07-21T18:06:15.849Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/truble-firebase-stackdriver:testIamPermissions  
+
+[debug] [2019-07-21T18:06:16.063Z] <<< HTTP RESPONSE 200
+[debug] [2019-07-21T18:06:16.066Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/truble-firebase-stackdriver  
+ 
+[debug] [2019-07-21T18:06:16.233Z] <<< HTTP RESPONSE 200
+[info] 
+[info] === Deploying to 'truble-firebase-stackdriver'...
+[info] 
+[info] i  deploying database, storage, hosting
+[info] i  database: checking rules syntax...
+[debug] [2019-07-21T18:06:16.243Z] >>> HTTP REQUEST PUT https://truble-firebase-stackdriver.firebaseio.com/.settings/rules.json?dryRun=true  
+ {
+  "rules": {
+     "audit": {
+      	"$user": {
+          ".write": "newData.exists() && auth.uid === $user",
+          ".read": true,
+ 			    ".validate": "newData.isNumber() && newData.val() === now && (!data.exists() || newData.val() > data.val()+5000)"
+        }
+      },
+
+      "messages": {
+        ".write": true,
+
+        ".read": true,
+        "$message_id": {
+          ".write": "newData.hasChildren(['ts', 'uid', 'message'])",
+          "uid": {
+            ".validate": "newData.val() === auth.uid"
+          },
+          "ts": {
+            ".validate": "newData.val() >= now - 500 && newData.val() === root.child('audit/'+auth.uid).val()"
+          },
+          "message": {
+            ".validate": "newData.isString() && newData.val().length < 500" 
+          },
+          "$other": {
+            ".validate": false 
+          }
+        }
+      } 
+  }
+}
+[debug] [2019-07-21T18:06:16.398Z] <<< HTTP RESPONSE 200
+[info] +  database: rules syntax for database truble-firebase-stackdriver is valid
+[debug] [2019-07-21T18:06:16.401Z] >>> HTTP REQUEST GET https://appengine.googleapis.com/v1/apps/truble-firebase-stackdriver  
+ 
+[debug] [2019-07-21T18:06:16.664Z] <<< HTTP RESPONSE 200
+[info] i  storage: checking storage.rules for compilation errors...
+[debug] [2019-07-21T18:06:16.668Z] >>> HTTP REQUEST POST https://firebaserules.googleapis.com/v1/projects/truble-firebase-stackdriver:test  
+
+[debug] [2019-07-21T18:06:16.779Z] <<< HTTP RESPONSE 200
+[info] +  storage: rules file storage.rules compiled successfully
+[debug] [2019-07-21T18:06:16.782Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/truble-firebase-stackdriver/versions  
+
+[debug] [2019-07-21T18:06:17.090Z] <<< HTTP RESPONSE 200
+[info] i  storage: uploading rules storage.rules...
+[debug] [2019-07-21T18:06:17.093Z] >>> HTTP REQUEST POST https://firebaserules.googleapis.com/v1/projects/truble-firebase-stackdriver/rulesets  
+
+[debug] [2019-07-21T18:06:17.282Z] <<< HTTP RESPONSE 200
+[debug] [2019-07-21T18:06:17.283Z] [rules] created ruleset projects/truble-firebase-stackdriver/rulesets/240b2009-07b5-4b10-96a0-41e786e5ce55
+[info] i  hosting[truble-firebase-stackdriver]: beginning deploy...
+[info] i  hosting[truble-firebase-stackdriver]: found 1 files in public
+[debug] [2019-07-21T18:06:17.297Z] [hosting] hash cache [cHVibGlj] load error: lines is not defined
+[debug] [2019-07-21T18:06:17.307Z] [hosting] hash cache [cHVibGlj] stored for 1 files
+[debug] [2019-07-21T18:06:17.308Z] [hosting][hash queue][FINAL]
+[debug] [2019-07-21T18:06:17.308Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/truble-firebase-stackdriver/versions/b1ea785ad490cdbc:populateFiles  
+ <request body omitted>
+[debug] [2019-07-21T18:06:17.647Z] <<< HTTP RESPONSE 200
+[debug] [2019-07-21T18:06:17.650Z] [hosting][populate queue][FINAL]
+[debug] [2019-07-21T18:06:17.650Z] [hosting] uploads queued: 1
+[debug] [2019-07-21T18:06:18.383Z] [hosting][upload queue][FINAL]
+[info] +  hosting[truble-firebase-stackdriver]: file upload complete
+[debug] [2019-07-21T18:06:18.388Z] [hosting] deploy completed after 1104ms
+[info] i  database: releasing rules...
+[debug] [2019-07-21T18:06:18.470Z] >>> HTTP REQUEST PUT https://truble-firebase-stackdriver.firebaseio.com/.settings/rules.json  
+ {
+  "rules": {
+     "audit": {
+      	"$user": {
+          ".write": "newData.exists() && auth.uid === $user",
+          ".read": true,
+ 			    ".validate": "newData.isNumber() && newData.val() === now && (!data.exists() || newData.val() > data.val()+5000)"
+        }
+      },
+
+      "messages": {
+        ".write": true,
+
+        ".read": true,
+        "$message_id": {
+          ".write": "newData.hasChildren(['ts', 'uid', 'message'])",
+          "uid": {
+            ".validate": "newData.val() === auth.uid"
+          },
+          "ts": {
+            ".validate": "newData.val() >= now - 500 && newData.val() === root.child('audit/'+auth.uid).val()"
+          },
+          "message": {
+            ".validate": "newData.isString() && newData.val().length < 500" 
+          },
+          "$other": {
+            ".validate": false 
+          }
+        }
+      } 
+  }
+}
+[debug] [2019-07-21T18:06:18.759Z] <<< HTTP RESPONSE 200
+[info] +  database: rules for database truble-firebase-stackdriver released successfully
+[debug] [2019-07-21T18:06:18.763Z] [rules] releasing firebase.storage/truble-firebase-stackdriver.appspot.com with ruleset projects/truble-firebase-stackdriver/rulesets/240b2009-07b5-4b10-96a0-41e786e5ce55
+[debug] [2019-07-21T18:06:18.763Z] >>> HTTP REQUEST PATCH https://firebaserules.googleapis.com/v1/projects/truble-firebase-stackdriver/releases/firebase.storage/truble-firebase-stackdriver.appspot.com  
+
+[debug] [2019-07-21T18:06:18.980Z] <<< HTTP RESPONSE 200
+[debug] [2019-07-21T18:06:18.980Z] [rules] updated release projects/truble-firebase-stackdriver/releases/firebase.storage/truble-firebase-stackdriver.appspot.com
+[info] +  storage: released rules storage.rules to firebase.storage/truble-firebase-stackdriver.appspot.com
+[debug] [2019-07-21T18:06:18.982Z] [
+  {
+    "config": {
+      "public": "public",
+      "ignore": [
+        "firebase.json",
+        "**/.*",
+        "**/node_modules/**"
+      ],
+      "site": "truble-firebase-stackdriver"
+    },
+    "site": "truble-firebase-stackdriver",
+    "version": "sites/truble-firebase-stackdriver/versions/b1ea785ad490cdbc"
+  }
+]
+[info] i  hosting[truble-firebase-stackdriver]: finalizing version...
+[debug] [2019-07-21T18:06:18.984Z] >>> HTTP REQUEST PATCH https://firebasehosting.googleapis.com/v1beta1/sites/truble-firebase-stackdriver/versions/b1ea785ad490cdbc?updateMask=status  
+
+[debug] [2019-07-21T18:06:19.105Z] <<< HTTP RESPONSE 200
+[debug] [2019-07-21T18:06:19.106Z] [hosting] finalized version for truble-firebase-stackdriver:
+[info] +  hosting[truble-firebase-stackdriver]: version finalized
+[info] i  hosting[truble-firebase-stackdriver]: releasing new version...
+[debug] [2019-07-21T18:06:19.109Z] >>> HTTP REQUEST POST https://firebasehosting.googleapis.com/v1beta1/sites/truble-firebase-stackdriver/releases?version_name=sites/truble-firebase-stackdriver/versions/b1ea785ad490cdbc  
+
